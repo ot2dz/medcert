@@ -61,3 +61,129 @@ function initializeDatabase() {
 
 // تصدير دالة التهيئة وقاعدة البيانات لاستخدامها في أماكن أخرى
 module.exports = { db, initializeDatabase };
+
+// --- دوال CRUD للمرضى ---
+
+function addPatient(patient) {
+    const stmt = db.prepare('INSERT INTO patients (full_name, birth_date, national_id) VALUES (?, ?, ?)');
+    const info = stmt.run(patient.fullName, patient.birthDate, patient.nationalId);
+    return { id: info.lastInsertRowid, ...patient };
+}
+
+function getPatients() {
+    const stmt = db.prepare('SELECT * FROM patients ORDER BY full_name');
+    return stmt.all();
+}
+
+function updatePatient(patient) {
+    const stmt = db.prepare('UPDATE patients SET full_name = ?, birth_date = ?, national_id = ? WHERE id = ?');
+    const info = stmt.run(patient.fullName, patient.birthDate, patient.nationalId, patient.id);
+    return info.changes > 0;
+}
+
+function deletePatient(id) {
+    const stmt = db.prepare('DELETE FROM patients WHERE id = ?');
+    const info = stmt.run(id);
+    return info.changes > 0;
+}
+
+// --- دوال CRUD للشهادات ---
+
+function addCertificate(certificate) {
+    const stmt = db.prepare(`
+        INSERT INTO certificates (patient_id, issue_date, leave_duration_days, diagnosis, pdf_path) 
+        VALUES (?, ?, ?, ?, ?)
+    `);
+    const info = stmt.run(
+        certificate.patientId, 
+        certificate.issueDate, 
+        certificate.leaveDurationDays, 
+        certificate.diagnosis, 
+        certificate.pdfPath
+    );
+    return { id: info.lastInsertRowid, ...certificate };
+}
+
+function getCertificates() {
+    const stmt = db.prepare(`
+        SELECT c.*, p.full_name as patient_name, p.birth_date as patient_birth_date 
+        FROM certificates c 
+        LEFT JOIN patients p ON c.patient_id = p.id 
+        ORDER BY c.created_at DESC
+    `);
+    return stmt.all();
+}
+
+function getCertificatesByPatient(patientId) {
+    const stmt = db.prepare(`
+        SELECT c.*, p.full_name as patient_name, p.birth_date as patient_birth_date 
+        FROM certificates c 
+        LEFT JOIN patients p ON c.patient_id = p.id 
+        WHERE c.patient_id = ? 
+        ORDER BY c.created_at DESC
+    `);
+    return stmt.all(patientId);
+}
+
+function updateCertificate(certificate) {
+    const stmt = db.prepare(`
+        UPDATE certificates 
+        SET patient_id = ?, issue_date = ?, leave_duration_days = ?, diagnosis = ?, pdf_path = ? 
+        WHERE id = ?
+    `);
+    const info = stmt.run(
+        certificate.patientId, 
+        certificate.issueDate, 
+        certificate.leaveDurationDays, 
+        certificate.diagnosis, 
+        certificate.pdfPath,
+        certificate.id
+    );
+    return info.changes > 0;
+}
+
+function deleteCertificate(id) {
+    const stmt = db.prepare('DELETE FROM certificates WHERE id = ?');
+    const info = stmt.run(id);
+    return info.changes > 0;
+}
+
+// دالة للبحث عن مريض أو إنشاؤه إذا لم يكن موجوداً
+function findOrCreatePatient(patientData) {
+    // البحث أولاً بالاسم وتاريخ الميلاد
+    let stmt = db.prepare('SELECT * FROM patients WHERE full_name = ? AND birth_date = ?');
+    let patient = stmt.get(patientData.fullName, patientData.birthDate);
+    
+    if (patient) {
+        return patient;
+    }
+    
+    // إذا لم يوجد، إنشاء مريض جديد
+    stmt = db.prepare('INSERT INTO patients (full_name, birth_date, national_id) VALUES (?, ?, ?)');
+    const info = stmt.run(patientData.fullName, patientData.birthDate, patientData.nationalId || null);
+    
+    return {
+        id: info.lastInsertRowid,
+        full_name: patientData.fullName,
+        birth_date: patientData.birthDate,
+        national_id: patientData.nationalId || null,
+        created_at: new Date().toISOString()
+    };
+}
+
+module.exports = { 
+    db, 
+    initializeDatabase,
+    // دوال المرضى
+    addPatient,
+    getPatients,
+    updatePatient,
+    deletePatient,
+    // دوال الشهادات
+    addCertificate,
+    getCertificates,
+    getCertificatesByPatient,
+    updateCertificate,
+    deleteCertificate,
+    findOrCreatePatient
+};

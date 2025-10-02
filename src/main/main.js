@@ -1,7 +1,19 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 // إعادة تفعيل قاعدة البيانات بعد حل مشكلة better-sqlite3
-const { initializeDatabase } = require('./database');
+const { 
+  initializeDatabase, 
+  addPatient, 
+  getPatients, 
+  updatePatient, 
+  deletePatient,
+  addCertificate,
+  getCertificates,
+  getCertificatesByPatient,
+  updateCertificate,
+  deleteCertificate,
+  findOrCreatePatient
+} = require('./database');
 // Try multiple ports for Vite dev server
 const VITE_DEV_PORTS = [5173, 5174, 5175, 5176];
 
@@ -60,6 +72,49 @@ const createWindow = () => {
 app.whenReady().then(() => {
   // إعادة تفعيل قاعدة البيانات بعد حل مشكلة better-sqlite3
   initializeDatabase();
+  
+  // تسجيل مستمعين IPC
+  ipcMain.handle('db:addPatient', (event, patient) => {
+    return addPatient(patient);
+  });
+  
+  ipcMain.handle('db:getPatients', () => {
+    return getPatients();
+  });
+  
+  ipcMain.handle('db:updatePatient', (event, patient) => {
+    return updatePatient(patient);
+  });
+  
+  ipcMain.handle('db:deletePatient', (event, id) => {
+    return deletePatient(id);
+  });
+  
+  // مستمعين IPC للشهادات
+  ipcMain.handle('db:addCertificate', (event, certificate) => {
+    return addCertificate(certificate);
+  });
+  
+  ipcMain.handle('db:getCertificates', () => {
+    return getCertificates();
+  });
+  
+  ipcMain.handle('db:getCertificatesByPatient', (event, patientId) => {
+    return getCertificatesByPatient(patientId);
+  });
+  
+  ipcMain.handle('db:updateCertificate', (event, certificate) => {
+    return updateCertificate(certificate);
+  });
+  
+  ipcMain.handle('db:deleteCertificate', (event, id) => {
+    return deleteCertificate(id);
+  });
+  
+  ipcMain.handle('db:findOrCreatePatient', (event, patientData) => {
+    return findOrCreatePatient(patientData);
+  });
+  
   createWindow();
 
   app.on('activate', () => {

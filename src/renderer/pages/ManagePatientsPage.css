@@ -1,0 +1,327 @@
+.manage-patients-page {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+    width: 100%;
+    height: calc(100vh - 120px);
+    direction: rtl;
+    font-family: 'Tajawal', Arial, sans-serif;
+}
+
+.patient-form-container, .patient-list-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #e9ecef;
+}
+
+.patient-form-container {
+    height: fit-content;
+}
+
+.patient-form-container h3,
+.patient-list-container h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.patient-form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.patient-form-container input {
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 16px;
+    direction: rtl;
+    text-align: right;
+    transition: border-color 0.2s ease;
+}
+
+.patient-form-container input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.patient-form-container input:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.patient-form-container input::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.form-buttons button {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-height: 48px;
+}
+
+.form-buttons button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.form-buttons button[type="submit"]:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-buttons button[type="button"] {
+    background-color: #6c757d;
+    color: white;
+}
+
+.form-buttons button[type="button"]:hover:not(:disabled) {
+    background-color: #5a6268;
+}
+
+.form-buttons button:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.search-bar {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 12px;
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 16px;
+    direction: rtl;
+    text-align: right;
+    background-color: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: #007bff;
+    background-color: white;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.search-bar::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+.patient-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+}
+
+.patient-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.patient-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.patient-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.patient-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.patient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.patient-item:last-child {
+    border-bottom: none;
+}
+
+.patient-item:hover {
+    background-color: #f8f9fa;
+}
+
+.patient-info {
+    flex-grow: 1;
+}
+
+.patient-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.patient-details {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.patient-details span {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.patient-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.patient-actions button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 60px;
+}
+
+.edit-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.edit-btn:hover:not(:disabled) {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover:not(:disabled) {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+.patient-actions button:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: #6c757d;
+    font-size: 16px;
+    font-style: italic;
+}
+
+.no-patients {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: #6c757d;
+    font-size: 16px;
+    font-style: italic;
+    border: none;
+}
+
+/* تحسينات للشاشات الصغيرة */
+@media (max-width: 1024px) {
+    .manage-patients-page {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        height: auto;
+    }
+    
+    .patient-form-container {
+        order: 2;
+    }
+    
+    .patient-list-container {
+        order: 1;
+    }
+    
+    .patient-list {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .manage-patients-page {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .patient-form-container, .patient-list-container {
+        padding: 15px;
+    }
+    
+    .patient-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .patient-actions {
+        justify-content: center;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+}
+
+/* تأثيرات الحركة */
+.patient-item {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
