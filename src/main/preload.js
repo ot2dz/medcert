@@ -15,6 +15,10 @@ contextBridge.exposeInMainWorld('api', {
   updateCertificate: (certificate) => ipcRenderer.invoke('db:updateCertificate', certificate),
   deleteCertificate: (id) => ipcRenderer.invoke('db:deleteCertificate', id),
   findOrCreatePatient: (patientData) => ipcRenderer.invoke('db:findOrCreatePatient', patientData),
+  
+  // دوال PDF
+  generateAndSavePDF: (htmlContent, certificateData) => ipcRenderer.invoke('pdf:generateAndSave', htmlContent, certificateData),
+  printPDF: (pdfPath) => ipcRenderer.invoke('pdf:print', pdfPath),
 });
 
 console.log('Preload script loaded with secure API bridge!');

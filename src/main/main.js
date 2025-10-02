@@ -1,5 +1,6 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
+const fs = require('fs');
 // إعادة تفعيل قاعدة البيانات بعد حل مشكلة better-sqlite3
 const { 
   initializeDatabase, 
@@ -16,6 +17,96 @@ const {
 } = require('./database');
 // Try multiple ports for Vite dev server
 const VITE_DEV_PORTS = [5173, 5174, 5175, 5176];
+
+// Create PDF storage directory
+const pdfStoragePath = path.resolve(__dirname, '../../db/pdfs');
+if (!fs.existsSync(pdfStoragePath)) {
+  fs.mkdirSync(pdfStoragePath, { recursive: true });
+  console.log('PDF storage directory created:', pdfStoragePath);
+}
+
+// PDF Generation function
+async function generatePDF(htmlContent) {
+  return new Promise((resolve, reject) => {
+    // Create a hidden BrowserWindow for PDF generation
+    const pdfWindow = new BrowserWindow({
+      show: false,
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        enableRemoteModule: false,
+        webSecurity: false // Disable for HTML string loading
+      }
+    });
+
+    // Load the HTML content
+    pdfWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`)
+      .then(() => {
+        // Wait a moment for content to render
+        setTimeout(() => {
+          // Generate PDF
+          pdfWindow.webContents.printToPDF({
+            format: 'A4',
+            printBackground: true,
+            pageRanges: '1', // Print only the first page
+            preferCSSPageSize: true,
+            margins: {
+              top: 0.5,
+              bottom: 0.5,
+              left: 0.5,
+              right: 0.5
+            },
+            landscape: false,
+            displayHeaderFooter: false
+          }).then((pdfBuffer) => {
+            pdfWindow.close();
+            resolve(pdfBuffer);
+          }).catch((error) => {
+            pdfWindow.close();
+            reject(error);
+          });
+        }, 1000);
+      })
+      .catch((error) => {
+        pdfWindow.close();
+        reject(error);
+      });
+  });
+}
+
+// Save PDF and create certificate record
+async function savePDFAndCreateCertificate(htmlContent, certificateData) {
+  try {
+    // Generate PDF buffer
+    const pdfBuffer = await generatePDF(htmlContent);
+    
+    // Create unique filename
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `certificate-${certificateData.patientId}-${timestamp}.pdf`;
+    const filePath = path.join(pdfStoragePath, filename);
+    
+    // Save PDF file
+    fs.writeFileSync(filePath, pdfBuffer);
+    
+    // Add certificate to database with PDF path
+    const certificateWithPDF = {
+      ...certificateData,
+      pdfPath: filePath
+    };
+    
+    const result = await addCertificate(certificateWithPDF);
+    
+    return {
+      success: true,
+      certificate: result,
+      pdfPath: filePath,
+      filename: filename
+    };
+  } catch (error) {
+    console.error('Error generating PDF and saving certificate:', error);
+    throw error;
+  }
+}
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -113,6 +204,41 @@ app.whenReady().then(() => {
   
   ipcMain.handle('db:findOrCreatePatient', (event, patientData) => {
     return findOrCreatePatient(patientData);
+  });
+  
+  // PDF Generation IPC handler
+  ipcMain.handle('pdf:generateAndSave', async (event, htmlContent, certificateData) => {
+    try {
+      return await savePDFAndCreateCertificate(htmlContent, certificateData);
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      throw error;
+    }
+  });
+  
+  // PDF Print IPC handler
+  ipcMain.handle('pdf:print', async (event, pdfPath) => {
+    try {
+      const { shell } = require('electron');
+      
+      // Check if file exists
+      if (!fs.existsSync(pdfPath)) {
+        throw new Error('PDF file not found');
+      }
+      
+      // Open PDF with default system application (which will show print option)
+      const result = await shell.openPath(pdfPath);
+      
+      if (result) {
+        // If there's an error opening the file
+        throw new Error(`Could not open PDF: ${result}`);
+      }
+      
+      return { success: true, message: 'PDF opened successfully for printing' };
+    } catch (error) {
+      console.error('PDF print error:', error);
+      throw error;
+    }
   });
   
   createWindow();
