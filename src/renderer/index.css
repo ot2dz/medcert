@@ -1,55 +1,19 @@
-* {
-  box-sizing: border-box;
+html, body, #root {
+  height: 100%;
+  margin: 0;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Tajawal', 'Cairo';
-  margin: 0;
-  padding: 0;
+    Arial, sans-serif;
   background-color: #f0f2f5;
   color: #333;
-  line-height: 1.6;
 }
 
 .app-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
   padding: 20px;
-  min-height: 100vh;
-  width: 100%;
-}
-
-/* دعم الخطوط العربية */
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap');
-
-/* تحسينات عامة للنصوص العربية */
-.arabic-text {
-  font-family: 'Tajawal', Arial, sans-serif;
-  direction: rtl;
-  text-align: right;
-}
-
-/* تنسيق الشريط المتدرج */
-.scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
-}
-
-.scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
-
-.scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-.scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  height: 100%;
+  box-sizing: border-box;
 }

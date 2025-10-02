@@ -1,10 +1,10 @@
 import React from 'react';
-import CreateCertificateForm from './pages/CreateCertificateForm'; // تم تغيير اسم الاستيراد هنا
+import CreateCertificatePage from './pages/CreateCertificatePage'; // تحديث اسم الاستيراد
 
 function App() {
   return (
     <div className="app-container">
-      <CreateCertificateForm />
+      <CreateCertificatePage />
     </div>
   );
 }

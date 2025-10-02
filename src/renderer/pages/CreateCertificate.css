@@ -1,18 +1,44 @@
+.create-certificate-page {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+}
+
 .form-container {
+    flex: 2;
     padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 800px;
-    margin: 20px;
+    max-width: 600px;
+    overflow-y: auto;
 }
 
+.preview-container {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.preview-container h2,
 .form-container h2 {
     margin-top: 0;
     margin-bottom: 20px;
     text-align: center;
     color: #333;
+}
+
+.preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    background-color: #e8e8e8;
 }
 
 .form-grid {
@@ -41,7 +67,7 @@
 }
 
 .divider {
-    grid-column: 1 / -1; /* Span across all columns */
+    grid-column: 1 / -1;
     border: none;
     border-top: 1px solid #eee;
     margin: 10px 0;
