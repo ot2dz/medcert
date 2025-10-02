@@ -8,10 +8,12 @@
   "scripts": {
     "dev:ui": "vite",
     "dev:electron": "electron .",
-    "dev": "concurrently \"npm:dev:ui\" \"npm:dev:electron\""
+    "dev": "concurrently \"npm:dev:ui\" \"npm:dev:electron\"",
+    "rebuild": "npx electron-rebuild",
+    "postinstall": "npx electron-rebuild"
   },
   "dependencies": {
-    "better-sqlite3": "^11.1.2",
+    "better-sqlite3": "^12.4.1",
     "electron": "^38.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -20,6 +22,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^8.2.2",
     "electron-builder": "^25.0.0",
+    "electron-rebuild": "^3.2.9",
     "vite": "^7.1.8"
   }
 }

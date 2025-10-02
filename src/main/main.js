@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-
+// إعادة تفعيل قاعدة البيانات بعد حل مشكلة better-sqlite3
+const { initializeDatabase } = require('./database');
 // Try multiple ports for Vite dev server
 const VITE_DEV_PORTS = [5173, 5174, 5175, 5176];
 
@@ -57,6 +58,8 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
+  // إعادة تفعيل قاعدة البيانات بعد حل مشكلة better-sqlite3
+  initializeDatabase();
   createWindow();
 
   app.on('activate', () => {
