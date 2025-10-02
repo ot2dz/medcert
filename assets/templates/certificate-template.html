@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificat Médical</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm; /* Use min-height for flexibility */
+            padding: 25mm;
+            box-sizing: border-box;
+            border: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            line-height: 1.4;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        h1 {
+            text-align: center;
+            text-decoration: underline;
+            font-size: 18px;
+            margin: 50px 0;
+        }
+
+        main {
+            font-size: 16px;
+            line-height: 2.5;
+            flex-grow: 1; /* Pushes footer to the bottom */
+        }
+
+        main p {
+            margin: 20px 0;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 50px;
+            font-size: 16px;
+        }
+        
+        .issue-location {
+            text-align: left;
+        }
+
+        .doctor-signature {
+            text-align: center;
+        }
+        
+        .placeholder {
+            font-weight: bold;
+            color: #007bff; /* Make placeholders visible in template */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <span>République algérienne démocratique et populaire</span><br>
+            <span>Ministère de la santé</span><br>
+            <span>{{clinic_name}}</span>
+        </header>
+
+        <h1>CERTIFICAT MEDICAL</h1>
+
+        <main>
+            <p>
+                Je soussigné(e), Dr <span class="placeholder">{{doctor_name}}</span> atteste que :
+            </p>
+            <p>
+                M./Mme <span class="placeholder">{{patient_full_name}}</span> né(e) LE <span class="placeholder">{{patient_birth_date}}</span> à <span class="placeholder">{{patient_birth_place}}</span>.
+            </p>
+            <p>
+                Nécessite un arrêt de travail de ( <span class="placeholder">{{leave_duration_days}}</span> ) jours à compter de ce jour.
+            </p>
+            <p>
+                Ce certificat est délivré à la demande de l'intéressé(e) pour faire valoir ce que de droit.
+            </p>
+        </main>
+
+        <footer>
+            <div class="issue-location">
+                <span>In Salah le : <span class="placeholder">{{issue_date}}</span></span>
+            </div>
+            <div class="doctor-signature">
+                <span>le médecin :</span>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
