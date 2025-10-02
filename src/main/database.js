@@ -81,6 +81,12 @@ function updatePatient(patient) {
     return info.changes > 0;
 }
 
+function updatePatientCreatedAt(patientId, createdAt) {
+    const stmt = db.prepare('UPDATE patients SET created_at = ? WHERE id = ?');
+    const info = stmt.run(createdAt, patientId);
+    return info.changes > 0;
+}
+
 function deletePatient(id) {
     const stmt = db.prepare('DELETE FROM patients WHERE id = ?');
     const info = stmt.run(id);
@@ -142,6 +148,12 @@ function updateCertificate(certificate) {
     return info.changes > 0;
 }
 
+function updateCertificateIssueDate(certificateId, issueDate) {
+    const stmt = db.prepare('UPDATE certificates SET issue_date = ? WHERE id = ?');
+    const info = stmt.run(issueDate, certificateId);
+    return info.changes > 0;
+}
+
 function deleteCertificate(id) {
     const stmt = db.prepare('DELETE FROM certificates WHERE id = ?');
     const info = stmt.run(id);
@@ -178,12 +190,14 @@ module.exports = {
     addPatient,
     getPatients,
     updatePatient,
+    updatePatientCreatedAt,
     deletePatient,
     // دوال الشهادات
     addCertificate,
     getCertificates,
     getCertificatesByPatient,
     updateCertificate,
+    updateCertificateIssueDate,
     deleteCertificate,
     findOrCreatePatient
 };

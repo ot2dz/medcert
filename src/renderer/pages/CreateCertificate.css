@@ -682,7 +682,7 @@
 
 .btn {
     padding: 14px 28px;
-    border: none;
+    border: none !important;
     border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
@@ -697,6 +697,8 @@
     position: relative;
     overflow: hidden;
     transform: translateY(0);
+    background: transparent;
+    color: white !important;
 }
 
 .btn::before {
@@ -715,39 +717,42 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    border: none !important;
 }
 
 .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-    background: linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%) !important;
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-    color: white;
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
+    color: white !important;
     box-shadow: 0 4px 15px rgba(100, 116, 139, 0.4);
+    border: none !important;
 }
 
 .btn-secondary:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(100, 116, 139, 0.5);
-    background: linear-gradient(135deg, #475569 0%, #334155 100%);
+    background: linear-gradient(135deg, #475569 0%, #334155 100%) !important;
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    border: none !important;
 }
 
 .btn-success:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
 }
 
 .btn:disabled {

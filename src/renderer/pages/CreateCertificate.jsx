@@ -112,9 +112,9 @@ function CreateCertificateForm() {
         }
     };
 
-    const handleSave = async () => {
+    const handleDirectPrint = async () => {
         if (!formData.patient_full_name.trim() || !formData.leave_duration_days) {
-            alert('يرجى ملء جميع البيانات المطلوبة');
+            alert('يرجى ملء جميع البيانات المطلوبة قبل الطباعة');
             return;
         }
 
@@ -130,31 +130,31 @@ function CreateCertificateForm() {
             
             const patient = await window.api.findOrCreatePatient(patientData);
             
-            // إنشاء بيانات الشهادة
+            // إنشاء بيانات الشهادة (بدون PDF)
             const certificateData = {
-                patientId: patient.id, // Match database function expectations
+                patientId: patient.id,
                 issueDate: formData.issue_date,
                 leaveDurationDays: parseInt(formData.leave_duration_days),
                 diagnosis: formData.diagnosis || 'غير محدد',
-                pdfPath: null // Will be set by the PDF generation function
+                pdfPath: null // لا نحفظ PDF في الطباعة المباشرة
             };
+            
+            // حفظ الشهادة في قاعدة البيانات
+            const certificate = await window.api.createCertificate(certificateData);
             
             // توليد HTML للشهادة
             const htmlContent = generatePreviewHTML();
             
-            // توليد PDF وحفظ الشهادة
-            const result = await window.api.generateAndSavePDF(htmlContent, certificateData);
+            // طباعة مباشرة
+            const printResult = await window.api.printDirect(htmlContent);
             
-            if (result.success) {
-                // حفظ معلومات الشهادة للطباعة لاحقاً
-                setLastCreatedCertificate({
-                    certificate: result.certificate,
-                    pdfPath: result.pdfPath,
-                    filename: result.filename,
-                    patient: patient
-                });
-                
-                alert(`تم إنشاء الشهادة والـ PDF بنجاح!\nرقم الشهادة: ${result.certificate.id}\nالمريض: ${patient.full_name}\nملف PDF: ${result.filename}`);
+            if (printResult.success && certificate.success) {
+                // التحقق من حالة الإلغاء
+                if (printResult.cancelled) {
+                    alert(`تم حفظ الشهادة بنجاح!\nرقم الشهادة: ${certificate.certificate.id}\nالمريض: ${patient.full_name}\n\nتم إلغاء الطباعة.`);
+                } else {
+                    alert(`تم حفظ الشهادة وفتح مربع حوار الطباعة بنجاح!\nرقم الشهادة: ${certificate.certificate.id}\nالمريض: ${patient.full_name}`);
+                }
                 
                 // إعادة تعيين النموذج
                 setFormData({
@@ -170,12 +170,16 @@ function CreateCertificateForm() {
                 });
                 setSelectedPatient('');
             } else {
-                throw new Error('فشل في توليد PDF');
+                throw new Error('فشل في حفظ الشهادة أو الطباعة');
             }
-            
         } catch (error) {
-            console.error('Error creating certificate:', error);
-            alert('حدث خطأ أثناء حفظ الشهادة: ' + error.message);
+            console.error('Error in direct printing:', error);
+            // تجاهل أخطاء الإلغاء
+            if (error.message && error.message.includes('Print job canceled')) {
+                // لا نعرض رسالة خطأ للإلغاء العادي
+                return;
+            }
+            alert('حدث خطأ أثناء الطباعة المباشرة: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -241,7 +245,7 @@ function CreateCertificateForm() {
             </main>
 
             <footer>
-                <div>${formData.issue_place} le : ${formData.issue_date}</div>
+                <div>${formData.issue_place} le : ${new Date(formData.issue_date).toLocaleDateString('en-GB')}</div>
                 <div>le médecin :</div>
             </footer>
         </body>
@@ -423,17 +427,19 @@ function CreateCertificateForm() {
                         </button>
                         <button 
                             type="button" 
-                            onClick={handleSave} 
-                            className="btn btn-success"
+                            onClick={handleDirectPrint} 
+                            className="btn btn-primary"
                             disabled={loading || !formData.patient_full_name.trim() || !formData.leave_duration_days}
                         >
                             {loading ? (
                                 <>
                                     <span className="loading-spinner"></span>
-                                    جاري الحفظ...
+                                    جاري الطباعة...
                                 </>
                             ) : (
-                                'حفظ وإنشاء PDF'
+                                <>
+                                    🖨️ طباعة مباشرة
+                                </>
                             )}
                         </button>
                         {lastCreatedCertificate && (
@@ -450,7 +456,7 @@ function CreateCertificateForm() {
                                     </>
                                 ) : (
                                     <>
-                                        🖨️ طباعة الشهادة
+                                        � طباعة من PDF
                                     </>
                                 )}
                             </button>
@@ -497,7 +503,7 @@ function CreateCertificateForm() {
 
                                 <div className="footer">
                                     <div className="left">
-                                        {formData.issue_place} le : {formData.issue_date}
+                                        {formData.issue_place} le : {new Date(formData.issue_date).toLocaleDateString('en-GB')}
                                     </div>
                                     <div className="right">
                                         le médecin :
