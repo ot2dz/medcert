@@ -6,7 +6,9 @@
   "author": "Your Name",
   "license": "ISC",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:ui": "vite",
+    "dev:electron": "electron .",
+    "dev": "concurrently \"npm:dev:ui\" \"npm:dev:electron\""
   },
   "dependencies": {
     "better-sqlite3": "^11.1.2",
