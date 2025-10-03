@@ -31,8 +31,6 @@
     "files": [
       "src/main/**/*",
       "dist/renderer/**/*",
-      "assets/**/*",
-      "db/**/*",
       "!src/renderer/**/*",
       "!node_modules/**/*",
       "node_modules/better-sqlite3/**/*",
@@ -40,16 +38,6 @@
       "node_modules/file-uri-to-path/**/*"
     ],
     "buildDependenciesFromSource": true,
-    "extraResources": [
-      {
-        "from": "db",
-        "to": "db",
-        "filter": [
-          "**/*",
-          "!*.sqlite"
-        ]
-      }
-    ],
     "win": {
       "target": [
         {
@@ -78,22 +66,16 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "allowElevation": true,
-      "installerIcon": "assets/icon.ico",
-      "uninstallerIcon": "assets/icon.ico",
-      "installerHeaderIcon": "assets/icon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "MedCert",
-      "include": "assets/installer.nsh"
+      "shortcutName": "MedCert"
     },
     "mac": {
       "target": "dmg",
-      "icon": "assets/icon.icns",
       "category": "public.app-category.medical"
     },
     "linux": {
       "target": "AppImage",
-      "icon": "assets/icon.png",
       "category": "Office"
     }
   },
