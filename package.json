@@ -18,7 +18,7 @@
     "dist": "npm run build:ui && electron-builder --publish=never",
     "dist:win": "npm run build:ui && electron-builder --win --publish=never",
     "pack": "npm run build:ui && electron-builder --dir",
-    "rebuild": "npx electron-rebuild",
+    "rebuild": "npx @electron/rebuild",
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
@@ -92,7 +92,6 @@
     "concurrently": "^8.2.2",
     "electron": "^38.2.0",
     "electron-builder": "^25.0.0",
-    "electron-rebuild": "^3.2.9",
     "vite": "^7.1.8"
   }
 }
