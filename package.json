@@ -1,26 +1,114 @@
 {
   "name": "medcert",
   "version": "1.0.0",
-  "description": "Medical Certificate Generator",
+  "description": "Medical Certificate Generator - تطبيق إنشاء الشهادات الطبية",
   "main": "src/main/main.js",
-  "author": "Your Name",
+  "author": {
+    "name": "MedCert Team",
+    "email": "support@medcert.app"
+  },
   "license": "ISC",
+  "homepage": ".",
   "scripts": {
     "dev:ui": "vite",
     "dev:electron": "electron .",
     "dev": "concurrently \"npm:dev:ui\" \"npm:dev:electron\"",
+    "build:ui": "vite build",
+    "build": "npm run build:ui && electron-builder",
+    "dist": "npm run build:ui && electron-builder --publish=never",
+    "dist:win": "npm run build:ui && electron-builder --win --publish=never",
+    "pack": "npm run build:ui && electron-builder --dir",
     "rebuild": "npx electron-rebuild",
-    "postinstall": "npx electron-rebuild"
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.medcert.app",
+    "productName": "MedCert - شهادات طبية",
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+      "src/main/**/*",
+      "dist/renderer/**/*",
+      "assets/**/*",
+      "db/**/*",
+      "!src/renderer/**/*",
+      "!node_modules/**/*",
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/bindings/**/*",
+      "node_modules/file-uri-to-path/**/*"
+    ],
+    "buildDependenciesFromSource": true,
+    "extraResources": [
+      {
+        "from": "db",
+        "to": "db",
+        "filter": [
+          "**/*",
+          "!*.sqlite"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "${productName}-${version}-Setup.${ext}",
+      "asar": true,
+      "asarUnpack": [
+        "node_modules/better-sqlite3/**/*",
+        "node_modules/bindings/**/*",
+        "node_modules/file-uri-to-path/**/*"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MedCert",
+      "include": "assets/installer.nsh"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.medical"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png",
+      "category": "Office"
+    }
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
-    "electron": "^38.2.0",
+    "bindings": "^1.5.0",
+    "file-uri-to-path": "^2.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@electron/rebuild": "^4.0.1",
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^8.2.2",
+    "electron": "^38.2.0",
     "electron-builder": "^25.0.0",
     "electron-rebuild": "^3.2.9",
     "vite": "^7.1.8"

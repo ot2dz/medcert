@@ -1,9 +1,21 @@
 const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
+const { app } = require('electron');
 
-// تحديد مسار قاعدة البيانات داخل مجلد db
-const dbPath = path.resolve(__dirname, '../../db/app.sqlite');
+// تحديد مسار قاعدة البيانات في مجلد المستخدم
+function getDatabasePath() {
+    // في حالة التطوير، استخدام المجلد المحلي
+    if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
+        return path.resolve(__dirname, '../../db/app.sqlite');
+    }
+    
+    // في حالة التطبيق المُجمع، استخدام مجلد userData
+    const userDataPath = app.getPath('userData');
+    return path.join(userDataPath, 'db', 'app.sqlite');
+}
+
+const dbPath = getDatabasePath();
 const dbDir = path.dirname(dbPath);
 
 // التأكد من وجود مجلد db

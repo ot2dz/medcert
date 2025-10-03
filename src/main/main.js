@@ -22,7 +22,18 @@ const {
 const VITE_DEV_PORTS = [5173, 5174, 5175, 5176];
 
 // Create PDF storage directory
-const pdfStoragePath = path.resolve(__dirname, '../../db/pdfs');
+function getPDFStoragePath() {
+    // في حالة التطوير، استخدام المجلد المحلي
+    if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
+        return path.resolve(__dirname, '../../db/pdfs');
+    }
+    
+    // في حالة التطبيق المُجمع، استخدام مجلد userData
+    const userDataPath = app.getPath('userData');
+    return path.join(userDataPath, 'db', 'pdfs');
+}
+
+const pdfStoragePath = getPDFStoragePath();
 if (!fs.existsSync(pdfStoragePath)) {
   fs.mkdirSync(pdfStoragePath, { recursive: true });
   console.log('PDF storage directory created:', pdfStoragePath);
